@@ -25,11 +25,19 @@ class RemoteManage():
         except Exception as e :
             print(str(e))
 
-    def putfile(self, localpath, remotepath):
+    def getfile(self, localpath, remotepath):
         try:
             self.sftp = self.ssh.open_sftp()
             print(self.sftp.listdir('/'))    #打印目录列表
             self.sftp.get(remotepath, localpath)    #下载文件
+        except Exception as e :
+            print(str(e))
+
+    def putfile(self, localpath, remotepath):
+        try:
+            self.sftp = self.ssh.open_sftp()
+            print(self.sftp.listdir('/'))    #打印目录列表
+            self.sftp.put(localpath, remotepath)    #下载文件
         except Exception as e :
             print(str(e))
 

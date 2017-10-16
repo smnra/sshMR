@@ -25,11 +25,11 @@ class RemoteManage():
         except Exception as e :
             print(str(e))
 
-    def getfile(self, remotepath, localpath):
+    def putfile(self, localpath, remotepath):
         try:
             self.sftp = self.ssh.open_sftp()
             print(self.sftp.listdir('/'))    #打印目录列表
-            self.sftp.get(remotepath, localpath)    #下载文件
+            self.sftp.put(localpath, remotepath)    #下载文件
         except Exception as e :
             print(str(e))
 
@@ -37,7 +37,7 @@ if __name__ == '__main__' :
     remote = RemoteManage(hostname, username, password, port = 22, cmd = 'ls -l')
     result = remote.exec('ls -l /')
     print(result)
-    remote.getfile('/home/smnra/getip/requirements.txt', 'requirements.txt')
+    remote.putfile('ssh.py','/home/smnra/ssh.py')
 
     #remote.ssh.close()    #关闭连接
 
