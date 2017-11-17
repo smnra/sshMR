@@ -30,8 +30,8 @@ class readXMLET():
     def readXML(self,xmlPath,csvfile):
         objectNum = 0
         toFile = open('write.csv' ,'w+')                                             #以追加的方式打开文件write.csv
-        for event, elem in ET.iterparse(xmlPath, events=('end',)):             #注意这里只使用end进行触发即可
-            #self.line=[]                                                         # 清空self.line
+        for event, elem in ET.iterparse(xmlPath, events=('end',)):             #注意这里只使用标签的 end事件 进行触发即可
+            #self.line={}                                                         # 清空self.line
 
             if elem.tag == 'v':                     #v 标签处理
                 if elem.text :                           #如果标签的text 存在
@@ -39,11 +39,17 @@ class readXMLET():
                     self.values.append(v)       #把elem的 text 属性 用 ' ' 分割为列表 然后把列表添加到 self.values列表 中
                     for i,value in  enumerate(v):        # 遍历self.values
                         self.line[self.title[i]] = v[i]   # 给字典self.line 赋值: key 为self.title[i] , 值为self.values[i]
-                    self.buff.append(dict(self.line))                     # 把字典self.line 添加到 self.buff 列表中 list() 深拷贝list
-                    v= []
-
                 else:                                               #注意 self.values 为二元列表
                     print("Result is None!")        #如果标签的text 为空 则打印 "Result is None!"
+
+            elif elem.tag == 'object':               #object 标签处理
+                self.line.update(elem.attrib)          #把字典elem.attrib 合并到self.line中
+                self.buff.append(dict(self.line))      # 把字典self.line 添加到 self.buff 列表中 list() 深拷贝list
+                for key,value in self.line.items():
+                    if not (key in self.title):                                     #如果self.title中不存在key 则添加key到title中
+                        self.title.append(key)
+                objectNum += 1
+                self.line={}                                                         # 清空self.line
 
             elif elem.tag == 'smr' :                   #如果遇到 smr 标签结束
                 if elem.text :                           #如果标签的text 存在
@@ -51,11 +57,7 @@ class readXMLET():
                 else:
                     print("Result is None!")        #如果标签的text 为空 则打印 "Result is None!"
 
-            elif elem.tag == 'object':               #object 标签处理
-                self.line.update(elem.attrib)                                          #把字典elem.attrib 合并到self.line中
-                for key,value in self.line.items():
-                    if not (key in self.title):                                     #如果self.title中不存在key 则添加key到title中
-                        self.title.append(key)
+
 
             elem.clear()                            #清楚标签
 
