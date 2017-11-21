@@ -31,10 +31,11 @@ class readXMLET():
         self.tablenames = []
         self.baseinfo = {}
         self.eNB_id = 0     #基站号
+        self.mrType = ''    #mr文件类型 MRE MRO MRS
 
     def readXML(self,xmlPath,csvfile):
         objectNum = 0
-
+        self.mrType = csvfile.split('_')[1]
 
         for event, elem in ET.iterparse(xmlPath, events=('start',)):             #注意这里只使用标签的 start事件 进行触发即可
 
@@ -80,18 +81,16 @@ class readXMLET():
 
             elif elem.tag == 'measurement':               #measurement 标签处理
 
-                self.tablenames.append(elem.attrib['mrName'])
                 df = pd.DataFrame(self.buff)        #把self.buff 转化为 datafream 类型
-                if not os.path.exists('.\\MRS\\' + self.eNB_id ) :
-                    os.makedirs('.\\MRS\\' + self.eNB_id)
+                if not os.path.exists('.\\' + self.mrType + '\\' + self.eNB_id ) :
+                    os.makedirs('.\\' + self.mrType + '\\' + self.eNB_id )
                 if elem.attrib :
-                    csvFullName = '.\\MRS\\' + self.eNB_id + '\\' + elem.attrib['mrName'] + csvfile
+                    csvFullName = '.\\' + self.mrType + '\\' + self.eNB_id + '\\' + elem.attrib['mrName'] + os.path.basename(csvfile)
                 else :
-                    csvFullName = '.\\MRS\\' + self.eNB_id + '\\' + csvfile
-                df.to_csv( '.\\MRS\\' + self.eNB_id + '\\' + elem.attrib['mrName'] + '.csv',mode = 'a+', index = False)     #保存为 csv文件 文件名为  measurement 标签 'mrName' 属性的值
+                    csvFullName = '.\\' + self.mrType + '\\' + self.eNB_id + '\\' + os.path.basename(csvfile)
+                df.to_csv(csvFullName, mode = 'a+', index = False)     #保存为 csv文件 文件名为  measurement 标签 'mrName' 属性的值
                 self.buff.clear()                   #清空self.buff列表
-
-
+                self.title = []
 
             elem.clear()                            #清楚标签
 
