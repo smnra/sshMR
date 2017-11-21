@@ -85,7 +85,7 @@ class readXMLET():
                 if not os.path.exists('.\\' + self.mrType + '\\' + self.eNB_id ) :
                     os.makedirs('.\\' + self.mrType + '\\' + self.eNB_id )
                 if elem.attrib :
-                    csvFullName = '.\\' + self.mrType + '\\' + self.eNB_id + '\\' + elem.attrib['mrName'] + os.path.basename(csvfile)
+                    csvFullName = '.\\' + self.mrType + '\\' + self.eNB_id + '\\' + elem.attrib['mrName'] + '_' + os.path.basename(csvfile)
                 else :
                     csvFullName = '.\\' + self.mrType + '\\' + self.eNB_id + '\\' + os.path.basename(csvfile)
                 df.to_csv(csvFullName, mode = 'a+', index = False)     #保存为 csv文件 文件名为  measurement 标签 'mrName' 属性的值
@@ -99,6 +99,8 @@ class readXMLET():
 if __name__=="__main__":
     xml = ungzip(r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRS_NSN_OMC_772566_20171106011500.xml.gz', r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRS_NSN_OMC_772566_20171106011500.xml')
     readxml = readXMLET()
+    readxml.readXML(r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRE_NSN_OMC_772566_20171106011500.xml', r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRE_NSN_OMC_772566_20171106011500.csv')
+    readxml.readXML(r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRO_NSN_OMC_772566_20171106011500.xml', r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRO_NSN_OMC_772566_20171106011500.csv')
     readxml.readXML(r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRS_NSN_OMC_772566_20171106011500.xml', r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRS_NSN_OMC_772566_20171106011500.csv')
 
 
