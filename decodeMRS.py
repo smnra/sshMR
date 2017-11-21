@@ -65,14 +65,14 @@ class readXMLET():
 
         #if objectNum == 10:                    #如果objectNum等于100,
         df = pd.DataFrame(self.buff)        #把self.buff 转化为 datafream 类型
-        df.to_csv('MRO.csv',mode = 'w+', index = False)
+        df.to_csv('MRS.csv',mode = 'w+', index = False)
         self.buff.clear()                   #清空self.buff列表
 
         print("Over!")
 
 if __name__=="__main__":
-    xml = ungzip(r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRO_NSN_OMC_772566_20171106011500.xml.gz', r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRO_NSN_OMC_772566_20171106011500.xml')
+    xml = ungzip(r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRS_NSN_OMC_772566_20171106011500.xml.gz', r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRS_NSN_OMC_772566_20171106011500.xml')
     readxml = readXMLET()
-    readxml.readXML(r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRO_NSN_OMC_772566_20171106011500.xml', r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRO_NSN_OMC_772566_20171106011500.csv')
+    readxml.readXML(r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRS_NSN_OMC_772566_20171106011500.xml', r'E:\工具\资料\宝鸡\研究\Python\python3\sshMR\mrdata\FDD-LTE_MRS_NSN_OMC_772566_20171106011500.csv')
 
 
