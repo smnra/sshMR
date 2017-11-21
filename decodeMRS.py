@@ -28,10 +28,24 @@ class readXMLET():
         self.title = []
         self.values = []
         self.buff=[]
+        self.tablenames = []
+        self.baseinfo = {}
+        self.eNB_id = 0     #基站号
 
     def readXML(self,xmlPath,csvfile):
         objectNum = 0
-        #toFile = open('write.csv' ,'w+')                                             #以追加的方式打开文件write.csv
+
+
+        for event, elem in ET.iterparse(xmlPath, events=('start',)):             #注意这里只使用标签的 start事件 进行触发即可
+
+            if elem.tag == 'fileHeader':               #measurement 标签处理
+                self.baseinfo = dict(elem.attrib)           #保存MRS文件基础信息
+
+            elif elem.tag == 'eNB':               #eNB 标签处理
+                self.eNB_id  = elem.attrib['id']       #基站号
+                break                            #结束循环
+            elem.clear()                            #清楚标签
+
         for event, elem in ET.iterparse(xmlPath, events=('end',)):             #注意这里只使用标签的 end事件 进行触发即可
             #self.line={}                                                         # 清空self.line
 
@@ -48,6 +62,7 @@ class readXMLET():
             elif elem.tag == 'object':               #object 标签处理
                 for self.line in self.lines :
                     self.line.update(elem.attrib)          #把字典elem.attrib 合并到self.line中
+                    self.line.update(self.baseinfo)          #把字典self.baseinfo 合并到self.line中
                     self.buff.append(dict(self.line))      # 把字典self.line 添加到 self.buff 列表中 dict() 深拷贝self.line
                     for key,value in self.line.items():
                         if not (key in self.title):                                     #如果self.title中不存在key 则添加key到title中
@@ -61,12 +76,24 @@ class readXMLET():
                     self.title = elem.text.split(' ')       #把elem的 text 属性 用 ' ' 分割为列表 存储在 self.title 中
                 else:
                     print("Result is None!")        #如果标签的text 为空 则打印 "Result is None!"
-            elem.clear()                            #清楚标签
 
-        #if objectNum == 10:                    #如果objectNum等于100,
-        df = pd.DataFrame(self.buff)        #把self.buff 转化为 datafream 类型
-        df.to_csv('MRS.csv',mode = 'w+', index = False)
-        self.buff.clear()                   #清空self.buff列表
+
+            elif elem.tag == 'measurement':               #measurement 标签处理
+
+                self.tablenames.append(elem.attrib['mrName'])
+                df = pd.DataFrame(self.buff)        #把self.buff 转化为 datafream 类型
+                if not os.path.exists('.\\MRS\\' + self.eNB_id ) :
+                    os.makedirs('.\\MRS\\' + self.eNB_id)
+                if elem.attrib :
+                    csvFullName = '.\\MRS\\' + self.eNB_id + '\\' + elem.attrib['mrName'] + csvfile
+                else :
+                    csvFullName = '.\\MRS\\' + self.eNB_id + '\\' + csvfile
+                df.to_csv( '.\\MRS\\' + self.eNB_id + '\\' + elem.attrib['mrName'] + '.csv',mode = 'a+', index = False)     #保存为 csv文件 文件名为  measurement 标签 'mrName' 属性的值
+                self.buff.clear()                   #清空self.buff列表
+
+
+
+            elem.clear()                            #清楚标签
 
         print("Over!")
 
